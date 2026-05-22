@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { supabase } from "./supabaseClient";
 
 import Navbar from "./components/navbar/Navbar";
@@ -45,8 +45,8 @@ function App() {
     }
   }, [dark]);
 
-  // FETCH HABITS
-  async function fetchHabits() {
+  // FETCH HABITS (FIXED ✅)
+  const fetchHabits = useCallback(async () => {
     if (!user) return;
 
     setLoading(true);
@@ -63,11 +63,11 @@ function App() {
     if (data) setHabits(data);
 
     setLoading(false);
-  }
+  }, [user]);
 
   useEffect(() => {
     if (user) fetchHabits();
-  }, [user]);
+  }, [user, fetchHabits]);
 
   // WEEK RESET
   useEffect(() => {
