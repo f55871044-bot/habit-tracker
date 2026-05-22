@@ -45,9 +45,9 @@ function App() {
     }
   }, [dark]);
 
-  // FETCH HABITS (SAFE FIX ADDED)
+  // FETCH HABITS
   async function fetchHabits() {
-    if (!user) return; // 🔥 SAFE CHECK ADDED
+    if (!user) return;
 
     setLoading(true);
 
@@ -118,7 +118,7 @@ function App() {
     }
   }
 
-  // COMPLETE HABIT
+  // COMPLETE HABIT (FIXED ✅)
   async function completeHabit(id) {
     const habit = habits.find((h) => h.id === id);
     if (!habit) return;
@@ -133,17 +133,22 @@ function App() {
         : habit.progress,
     };
 
-    await supabase
+    const { error } = await supabase
       .from("habits")
       .update(updatedHabit)
       .eq("id", id);
+
+    if (error) {
+      console.log(error);
+      return;
+    }
 
     if (isCompleted) {
       setShowConfetti(true);
       setTimeout(() => setShowConfetti(false), 3000);
     }
 
-    fetchHabits();
+    await fetchHabits();
   }
 
   // LOADING SCREEN
